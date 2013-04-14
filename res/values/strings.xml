@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Brt Tennis</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="tennis_dodge">Tennis Dodge</string>
+    <string name="pong">Pong</string>
+    <string name="block_break">Block Break</string>
+    <string name="title_activity_pong">PongActivity</string>
+    <string name="title_activity_dodge">DodgeActivity</string>
+    <string name="title_activity_block_break">BlockBreakActivity</string>
+
+</resources>
