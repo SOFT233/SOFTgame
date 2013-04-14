@@ -48,7 +48,7 @@ public class DodgeView extends GameView {
 		
 		mp = MediaPlayer.create(getContext(), R.raw.dodgetheme);
 		mp.setLooping(true);
-		mp.setVolume(0.5f, 0.5f);
+		mp.setVolume(1f, 1f);
 		mp.start();
 		
 		//Populates an array list with 4 different Points
