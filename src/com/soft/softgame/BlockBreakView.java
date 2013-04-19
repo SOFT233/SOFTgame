@@ -2,10 +2,10 @@ package com.soft.softgame;
 
 import java.util.ArrayList;
 
-import com.soft.model.Background;
 import com.soft.model.Block;
 import com.soft.model.SpriteObject;
 import com.soft.util.GameView;
+import com.soft.util.InputObject;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -19,11 +19,17 @@ public class BlockBreakView extends GameView {
 	
 	private SpriteObject brt;
 	private SpriteObject ball;
-	private Background back;
+	private SpriteObject back;
+	private SpriteObject win;
+	private SpriteObject loose;
 	private ArrayList<Block> blocks;
 	private int id_ball_noise;
 	private int id_block_noise;
-	private double ballVelocity = -0.75;
+	private int id_win_noise;
+	private int id_loose_noise;
+	private boolean gameEnd = false;
+	private double ballVelocityPos = 0.5;
+	private double ballVelocityNeg = -0.5;
 	private MediaPlayer mp;
 	
 	public BlockBreakView(Context context) {
@@ -31,6 +37,8 @@ public class BlockBreakView extends GameView {
 		
 		id_ball_noise = this.getSoundPool().load(context, R.raw.ball, 1);
 		id_block_noise = this.getSoundPool().load(context, R.raw.block, 1);
+		id_win_noise = this.getSoundPool().load(context, R.raw.win, 1);
+		id_loose_noise = this.getSoundPool().load(context, R.raw.loose, 1);
 		
 		blocks = new ArrayList<Block>();
 		
@@ -56,16 +64,29 @@ public class BlockBreakView extends GameView {
 		
 		brt = new SpriteObject(BitmapFactory.decodeResource(getResources(), R.drawable.brt), 0, 0);
 		ball = new SpriteObject(BitmapFactory.decodeResource(getResources(), R.drawable.ball), 0, 0);
-		back = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background), 0, 0);
+		back = new SpriteObject(BitmapFactory.decodeResource(getResources(), R.drawable.background), 0, 0);
+		win = new SpriteObject(BitmapFactory.decodeResource(getResources(), R.drawable.win), 0, 0);
+		loose = new SpriteObject(BitmapFactory.decodeResource(getResources(), R.drawable.loose), 0, 0);
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		super.surfaceCreated(holder);
 		
+		win.setState(SpriteObject.DEAD);
+		loose.setState(SpriteObject.DEAD);
+		
+		// set win loose position
+		win.setX(super.getGame_width()/2 - (win.getBitmap().getWidth()/2));
+		win.setY(super.getGame_height()/2 - (win.getBitmap().getHeight()/2));
+		loose.setX(super.getGame_width()/2 - (loose.getBitmap().getWidth()/2));
+		loose.setY(super.getGame_height()/2 - (loose.getBitmap().getHeight()/2));
+		
+		// centre to screen
 		brt.setX(super.getGame_width() - 130);
 		brt.setY(super.getGame_height()/2 - (brt.getBitmap().getHeight()/2));
 		
+		// centre to brt
 		ball.setX(brt.getX() - 50);
 		ball.setY(brt.getY() + ((brt.getBitmap().getHeight()/2) - (ball.getBitmap().getHeight()/2)));
 		
@@ -74,26 +95,43 @@ public class BlockBreakView extends GameView {
 		mp.setLooping(true);
 		mp.setVolume(1f, 1f);
 		mp.start();
-		
-		Log.i("canvas size", super.getGame_width() + " " + super.getGame_height());
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		super.surfaceDestroyed(holder);
 		
-		mp.stop();
-		mp.release();
+		// TODO surface destroyed not working correctly
+		
+		if(gameEnd == true) {
+			mp.stop();
+			mp.release();
+		}
+		else {
+			if(mp.isPlaying()) {
+				mp.stop();
+				mp.release();
+			}
+		}
 	}
 	
 	public void processMotionEvent(InputObject input) {
 		//brt.setX(input.x);
 		if(brt.getState() == SpriteObject.ALIVE) {
+			// TODO stop player from leaving screen bounds
 			brt.setY(input.y);
 			
+			// if ball not moving start ball
 			if(ball.getMoveX() == 0 && ball.getMoveY() == 0) {
-				ball.setMoveX(ballVelocity);
-				ball.setMoveY(ballVelocity);
+				ball.setMoveX(ballVelocityNeg);
+				ball.setMoveY(ballVelocityNeg);
+			}
+		}
+		
+		// user selects end game image, return to home screen
+		if(win.getState() == SpriteObject.ALIVE || loose.getState() == SpriteObject.ALIVE) {
+			if(input.eventType == InputObject.ACTION_TOUCH_UP) {
+				super.endGame();
 			}
 		}
 	}
@@ -110,6 +148,14 @@ public class BlockBreakView extends GameView {
 		
 		ball.draw(canvas);
 		brt.draw(canvas);
+		
+		if(win.getState() == SpriteObject.ALIVE) {
+			win.draw(canvas);
+		}
+		
+		if(loose.getState() == SpriteObject.ALIVE) {
+			loose.draw(canvas);
+		}
 	}
 	
 	public void update(int adj_mov) {
@@ -120,9 +166,6 @@ public class BlockBreakView extends GameView {
 			
 			// stop the music
 			mp.stop();
-			
-			// set loose screen
-			// play loose sound
 		}
 		else if(checkBlocks() == false) {
 			ball.setMoveX(0);
@@ -134,7 +177,12 @@ public class BlockBreakView extends GameView {
 			mp.stop();
 			
 			// set win screen
+			win.setState(SpriteObject.ALIVE);
 			// play win sound
+			if(gameEnd == false) {
+				playSound(id_win_noise);
+				gameEnd = true;
+			}
 		}
 		else {
 			// check for object collisions
@@ -164,18 +212,26 @@ public class BlockBreakView extends GameView {
 		if(ball.getX() >= super.getGame_width()) {
 			// if it goes off the back of the screen set to dead
 			brt.setState(SpriteObject.DEAD);
+			
+			// set loose screen
+			loose.setState(SpriteObject.ALIVE);
+			// play loose sound
+			if(gameEnd == false) {
+				playSound(id_loose_noise);
+				gameEnd = true;
+			}
 		}
 		else if(ball.getX() <= 0) {
-			ball.setMoveX(-ball.getMoveX());
+			ball.setMoveX(ballVelocityPos);
 			playSound(id_ball_noise);
 		}
 		
 		if(ball.getY() >= super.getGame_height()) {
-			ball.setMoveY(-ball.getMoveY());
+			ball.setMoveY(ballVelocityNeg);
 			playSound(id_ball_noise);
 		}
 		else if(ball.getY() <= 0) {
-			ball.setMoveY(-ball.getMoveY());
+			ball.setMoveY(ballVelocityPos);
 			playSound(id_ball_noise);
 		}
 		
@@ -185,7 +241,7 @@ public class BlockBreakView extends GameView {
 		
 		// check player ball collisions
 		if(brtRect.intersects(ballRect.left, ballRect.top, ballRect.right, ballRect.bottom)) {
-			ball.setMoveX(-ball.getMoveX());
+			ball.setMoveX(ballVelocityNeg);
 			playSound(id_ball_noise);
 			//Log.i("collision:Brt", "hit by ball");
 		}

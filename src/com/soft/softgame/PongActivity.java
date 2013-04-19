@@ -9,14 +9,15 @@ public class PongActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_pong);
+		getActionBar().hide();
+		setContentView(new PongView(this));
 	}
-
+	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.pong, menu);
-		return true;
+	protected void onPause() {
+		super.onPause();
+		
+		// return to home screen
+		this.finish();
 	}
-
 }

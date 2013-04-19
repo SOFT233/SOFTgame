@@ -10,7 +10,7 @@
     tools:context=".SelectionActivity" >
 
     	 
-    <Button
+	<Button
         android:id="@+id/tennisDodge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,19 +20,19 @@
         android:textSize="30sp"
         android:background="#000000"
         android:textColor="#ffffff"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="@string/tennis_dodge" />
-	    
+
     <Button
         android:id="@+id/pong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/tennisDodge"
         android:layout_alignLeft="@+id/tennisDodge"
         android:layout_alignRight="@+id/tennisDodge"
+        android:layout_below="@+id/tennisDodge"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:background="#000000"
         android:clickable="true"
         android:paddingLeft="5dp"
@@ -40,14 +40,14 @@
         android:text="@string/pong"
         android:textColor="#ffffff"
         android:textSize="30sp" />
-	    
+
     <Button
         android:id="@+id/blockBreak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tennisDodge"
-        android:layout_alignRight="@+id/tennisDodge"
-        android:layout_below="@id/tennisDodge"
+        android:layout_alignLeft="@+id/pong"
+        android:layout_alignRight="@+id/pong"
+        android:layout_below="@+id/pong"
         android:background="#000000"
         android:clickable="true"
         android:paddingLeft="5dp"

@@ -2,8 +2,6 @@ package com.soft.util;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.soft.softgame.GameLogic;
-import com.soft.softgame.InputObject;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,8 +28,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		createInputObjectPool();
 		soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 		
-		mGameLogic = new GameLogic(getHolder(), this);
-		
 		setFocusable(true);
 	}
 	
@@ -55,6 +51,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		this.game_height = game_height;
 	}
 	
+	public GameLogic getmGameLogic() {
+		return mGameLogic;
+	}
+
 	public Rect getBounds() {
 		return new Rect(0, 0, game_width, game_height);
 	}
@@ -76,6 +76,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// create functionality here
 		
+		// created gameloop thread
+		mGameLogic = new GameLogic(getHolder(), this);
+		
 		Canvas c = holder.lockCanvas();
 		game_width = c.getWidth();
 		game_height = c.getHeight();
@@ -88,8 +91,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// add close functionality here
-		
 		soundPool.release();
+		mGameLogic.killThread();
 	}
 	
 	@Override
@@ -146,5 +149,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	public void update(int adj_mov) {
 		// adj_mov allows for processor speed scaling
+	}
+
+	public void endGame() {
+		mGameLogic.setGameState(GameLogic.STOPPED);
+		
+		// TODO end activity and return to select activity
 	}
 }

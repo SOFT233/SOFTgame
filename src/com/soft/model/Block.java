@@ -33,13 +33,4 @@ public class Block extends SpriteObject {
 		}
 	}
 
-	@Override
-	public boolean collide(SpriteObject entity) {
-		if(state == ALIVE) {
-			return super.collide(entity);
-		}
-		else {
-			return false;
-		}
-	}
 }

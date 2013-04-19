@@ -1,4 +1,4 @@
-package com.soft.softgame;
+package com.soft.util;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

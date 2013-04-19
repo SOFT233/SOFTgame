@@ -2,7 +2,6 @@ package com.soft.softgame;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
 
 public class DodgeActivity extends Activity {
 
@@ -12,4 +11,12 @@ public class DodgeActivity extends Activity {
 		getActionBar().hide();
 		setContentView(new DodgeView(this));
 	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// return to home screen
+		this.finish();
+	}
+	
 }

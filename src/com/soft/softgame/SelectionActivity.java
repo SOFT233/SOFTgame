@@ -16,6 +16,7 @@ public class SelectionActivity extends Activity implements OnClickListener {
 	Button tennisDodger = null;
 	Button blockBreak = null;
 	private MediaPlayer mp;
+	private boolean mpInit;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class SelectionActivity extends Activity implements OnClickListener {
 		mp = MediaPlayer.create(this, R.raw.hometheme);
 		mp.setLooping(true);
 		mp.setVolume(1f, 1f);
+		mpInit = true;
 		mp.start();
 	}
 
@@ -44,15 +46,11 @@ public class SelectionActivity extends Activity implements OnClickListener {
 		int id = v.getId();
 		Intent intent = null;
 		
-		//stop music
-		mp.stop();
-		mp.release();
-		
 		switch(id){
 		
 		case R.id.pong:
-//			intent = new Intent(v.getContext(), PongActivity.class);
-//			startActivity(intent);
+			intent = new Intent(v.getContext(), PongActivity.class);
+			startActivity(intent);
 			break;
 			
 		case R.id.tennisDodge:
@@ -68,5 +66,28 @@ public class SelectionActivity extends Activity implements OnClickListener {
 		}
 		
 	}
-	
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		//stop music if playing
+		if(mpInit) {
+			mp.stop();
+			mp.release();
+			mpInit = false;
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// TODO restart music (seems to get illegal state exception when trying to reset)
+//		mp = MediaPlayer.create(this, R.raw.hometheme);
+//		mp.setLooping(true);
+//		mp.setVolume(1f, 1f);
+//		mpInit = true;
+//		mp.start();
+	}
 }

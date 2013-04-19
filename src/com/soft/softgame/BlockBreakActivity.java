@@ -2,7 +2,6 @@ package com.soft.softgame;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
 
 public class BlockBreakActivity extends Activity {
 
@@ -12,5 +11,12 @@ public class BlockBreakActivity extends Activity {
 		getActionBar().hide();
 		setContentView(new BlockBreakView(this));
 	}
-	
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		// return to home screen
+		this.finish();
+	}
 }

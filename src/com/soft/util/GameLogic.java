@@ -1,10 +1,10 @@
-package com.soft.softgame;
+package com.soft.util;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.soft.util.GameView;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class GameLogic extends Thread{
@@ -12,7 +12,7 @@ public class GameLogic extends Thread{
 	private SurfaceHolder surfaceHolder;
 	private GameView mGameView;
 	private int gameState;
-	public static final int PAUSE = 0;
+	public static final int STOPPED = 0;
 	public static final int READY = 1;
 	public static final int RUNNING = 2;
 	private ArrayBlockingQueue<InputObject> inputQueue = new ArrayBlockingQueue<InputObject>(20);
@@ -58,11 +58,16 @@ public class GameLogic extends Thread{
 					this.mGameView.onDraw(canvas);
 				}
 			}
+			catch(NullPointerException e) {
+				this.setGameState(GameLogic.STOPPED);
+				Log.i("Game Suspended", "Reverting to home screen");
+			}
 			finally {
 				if(canvas != null) {
 					surfaceHolder.unlockCanvasAndPost(canvas);
 				}
 			}
+			
 		}
 	}
 	
@@ -97,5 +102,9 @@ public class GameLogic extends Thread{
 				}
 			}
 		}
+	}
+	
+	public void killThread() {
+		this.gameState = STOPPED;
 	}
 }

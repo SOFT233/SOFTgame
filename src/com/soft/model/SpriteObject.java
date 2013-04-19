@@ -88,37 +88,4 @@ public class SpriteObject {
 		y += (adj_mov * y_move);
 	}
 	
-	public boolean collide(SpriteObject entity) {
-		double left, entity_left;
-		double right, entity_right;
-		double top, entity_top;
-		double bottom, entity_bottom;
-		
-		left = x;
-		entity_left = entity.getX();
-		
-		right = x + bitmap.getWidth();
-		entity_right = entity.getX() + entity.getBitmap().getWidth();
-		
-		top = y;
-		entity_top = entity.getY();
-		
-		bottom = y + bitmap.getHeight();
-		entity_bottom = entity.getY() + entity.getBitmap().getHeight();
-		
-		if(bottom < entity_top) {
-			return false;
-		}
-		if(top > entity_bottom) {
-			return false;
-		}
-		if(right < entity_left) {
-			return false;
-		}
-		if(left > entity_right) {
-			return false;
-		}
-		
-		return true;
-	}
 }
