@@ -28,15 +28,21 @@
         </activity>
         <activity
             android:name="com.soft.softgame.PongActivity"
-            android:label="@string/title_activity_pong" >
+            android:label="@string/title_activity_pong"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="com.soft.softgame.DodgeActivity"
-            android:label="@string/title_activity_dodge" >
+            android:label="@string/title_activity_dodge"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="com.soft.softgame.BlockBreakActivity"
-            android:label="@string/title_activity_block_break" >
+            android:label="@string/title_activity_block_break"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
 
